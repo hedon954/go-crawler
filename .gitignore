@@ -1,4 +1,14 @@
+# IDE
+.idea
+
+# Log
+log
+
+# Tmp Files
+new.html
+
 # Binaries for programs and plugins
+main
 *.exe
 *.exe~
 *.dll
