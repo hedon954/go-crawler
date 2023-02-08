@@ -6,5 +6,5 @@ package collect
 type Fetcher interface {
 
 	// Fetch the html content according to url
-	Get(url string) ([]byte, error)
+	Get(url *Request) ([]byte, error)
 }

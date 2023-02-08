@@ -3,6 +3,7 @@ package collect
 // Request defines a crawler request
 type Request struct {
 	Url       string
+	Cookie    string
 	ParseFunc func([]byte) ParseResult
 }
 

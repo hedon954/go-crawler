@@ -15,8 +15,8 @@ import (
 // BaseFetcher is a basic implementation of Fetcher
 type BaseFetcher struct{}
 
-func (bf BaseFetcher) Get(url string) ([]byte, error) {
-	resp, err := http.Get(url)
+func (bf BaseFetcher) Get(r *Request) ([]byte, error) {
+	resp, err := http.Get(r.Url)
 	if err != nil {
 		return nil, err
 	}
