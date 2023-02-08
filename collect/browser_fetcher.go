@@ -2,6 +2,7 @@ package collect
 
 import (
 	"bufio"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"time"
@@ -41,6 +42,9 @@ func (b BrowserFetcher) Get(url string) ([]byte, error) {
 		return nil, err
 	}
 	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("got error status code: %d, status: %s\n", resp.StatusCode, resp.Status)
+	}
 	bodyReader := bufio.NewReader(resp.Body)
 	encodeMode := DeterminEncoding(bodyReader)
 	utf8Reader := transform.NewReader(bodyReader, encodeMode.NewDecoder())

@@ -1,0 +1,17 @@
+{"level":"INFO","ts":"2023-02-08T19:42:12.144+0800","caller":"douban/douban.go:43","msg":"resuult","get url:":"https://www.douban.com/group/topic/282953678/"}
+{"level":"INFO","ts":"2023-02-08T19:42:16.933+0800","caller":"douban/douban.go:43","msg":"resuult","get url:":"https://www.douban.com/group/topic/282952727/"}
+{"level":"INFO","ts":"2023-02-08T19:42:18.122+0800","caller":"douban/douban.go:43","msg":"resuult","get url:":"https://www.douban.com/group/topic/282952703/"}
+{"level":"INFO","ts":"2023-02-08T19:42:22.937+0800","caller":"douban/douban.go:43","msg":"resuult","get url:":"https://www.douban.com/group/topic/282952159/"}
+{"level":"INFO","ts":"2023-02-08T19:42:24.101+0800","caller":"douban/douban.go:43","msg":"resuult","get url:":"https://www.douban.com/group/topic/282952008/"}
+{"level":"ERROR","ts":"2023-02-08T19:42:37.177+0800","caller":"douban/douban.go:38","msg":"read content failed","error":"Get \"https://www.douban.com/group/topic/282950572/\": context deadline exceeded (Client.Timeout exceeded while awaiting headers)"}
+{"level":"INFO","ts":"2023-02-08T19:42:46.038+0800","caller":"douban/douban.go:43","msg":"resuult","get url:":"https://www.douban.com/group/topic/282948800/"}
+{"level":"INFO","ts":"2023-02-08T19:42:52.180+0800","caller":"douban/douban.go:43","msg":"resuult","get url:":"https://www.douban.com/group/topic/282948800/"}
+{"level":"INFO","ts":"2023-02-08T19:42:55.920+0800","caller":"douban/douban.go:43","msg":"resuult","get url:":"https://www.douban.com/group/topic/282947741/"}
+{"level":"INFO","ts":"2023-02-08T19:43:09.079+0800","caller":"douban/douban.go:43","msg":"resuult","get url:":"https://www.douban.com/group/topic/282946533/"}
+{"level":"INFO","ts":"2023-02-08T19:43:11.547+0800","caller":"douban/douban.go:43","msg":"resuult","get url:":"https://www.douban.com/group/topic/282946424/"}
+{"level":"INFO","ts":"2023-02-08T19:43:14.046+0800","caller":"douban/douban.go:43","msg":"resuult","get url:":"https://www.douban.com/group/topic/282946408/"}
+{"level":"INFO","ts":"2023-02-08T19:43:16.590+0800","caller":"douban/douban.go:43","msg":"resuult","get url:":"https://www.douban.com/group/topic/282945850/"}
+{"level":"INFO","ts":"2023-02-08T19:43:19.108+0800","caller":"douban/douban.go:43","msg":"resuult","get url:":"https://www.douban.com/group/topic/282945602/"}
+{"level":"INFO","ts":"2023-02-08T19:43:22.879+0800","caller":"douban/douban.go:43","msg":"resuult","get url:":"https://www.douban.com/group/topic/282945282/"}
+{"level":"INFO","ts":"2023-02-08T19:43:24.141+0800","caller":"douban/douban.go:43","msg":"resuult","get url:":"https://www.douban.com/group/topic/282945252/"}
+{"level":"INFO","ts":"2023-02-08T19:43:25.371+0800","caller":"douban/douban.go:43","msg":"resuult","get url:":"https://www.douban.com/group/topic/282945226/"}
