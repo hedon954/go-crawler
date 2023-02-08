@@ -7,8 +7,8 @@ import (
 )
 
 func main() {
-	url := "http://www.baidu.com"
-	bf := collect.BaseFetch{}
+	url := "https://book.douban.com/subject/1007305/"
+	bf := collect.BaseFetcher{}
 	bs, err := bf.Get(url)
 	if err != nil {
 		panic(err)
