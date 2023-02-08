@@ -1,10 +1,15 @@
-package collect
+package fetcher
+
+import (
+	"time"
+)
 
 // Request defines a crawler request
 type Request struct {
 	Url       string
 	Cookie    string
-	ParseFunc func([]byte) ParseResult
+	Timeout   time.Duration
+	ParseFunc func([]byte, *Request) ParseResult
 }
 
 // ParseResult defines the result after parsing crawled response

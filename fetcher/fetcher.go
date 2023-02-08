@@ -1,6 +1,6 @@
-// Package collect
-// @description implements a crawler engine
-package collect
+// Package fetcher
+// @description implements a crawler fetcher
+package fetcher
 
 // Fetcher defines the crawler engine behaviors
 type Fetcher interface {
