@@ -71,6 +71,10 @@ func (c *Crawler) CreateWork() {
 			c.Logger.Error("check failed", zap.Error(err))
 			continue
 		}
+		if c.HasVisited(r) {
+			continue
+		}
+		c.StoreVisited(r)
 		body, err := r.Task.Fetcher.Get(r)
 		if err != nil {
 			c.Logger.Error("can't fetch ",
