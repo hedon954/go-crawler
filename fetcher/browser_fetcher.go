@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/hedon954/go-crawler/proxy"
+	"go.uber.org/zap"
 	"golang.org/x/text/transform"
 )
 
@@ -16,6 +17,7 @@ type BrowserFetcher struct {
 	UserAgent string
 	Timeout   time.Duration
 	Proxy     proxy.Func
+	Logger    *zap.Logger
 }
 
 func (b BrowserFetcher) Get(r *Request) ([]byte, error) {

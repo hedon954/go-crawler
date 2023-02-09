@@ -1,6 +1,8 @@
 package fetcher
 
 import (
+	"crypto/md5"
+	"encoding/hex"
 	"errors"
 )
 
@@ -8,6 +10,7 @@ import (
 type Request struct {
 	Task      *Task
 	Url       string
+	Method    string
 	Depth     int
 	ParseFunc func([]byte, *Request) ParseResult
 }
@@ -32,4 +35,10 @@ func (r Request) checkDepth() error {
 		return errors.New("Max depth limit reached")
 	}
 	return nil
+}
+
+// UniqueSign builds the unique sign for each request
+func (r Request) UniqueSign() string {
+	block := md5.Sum([]byte(r.Url + r.Method))
+	return hex.EncodeToString(block[:])
 }
