@@ -8,8 +8,12 @@ import (
 type Schedule struct {
 	requestCh chan *fetcher.Request
 	workerCh  chan *fetcher.Request
-	reqQueue  []*fetcher.Request
-	Logger    *zap.Logger
+
+	// The requests in priReqQueue need to be prioritized
+	priReqQueue []*fetcher.Request
+	reqQueue    []*fetcher.Request
+
+	Logger *zap.Logger
 }
 
 func NewSchedule() *Schedule {
@@ -31,11 +35,18 @@ func (s *Schedule) Pull() *fetcher.Request {
 }
 
 func (s *Schedule) Schedule() {
-	for {
-		var req *fetcher.Request
-		var ch chan *fetcher.Request
+	var req *fetcher.Request
+	var ch chan *fetcher.Request
 
-		if len(s.reqQueue) > 0 {
+	for {
+
+		if req == nil && len(s.priReqQueue) > 0 {
+			req = s.priReqQueue[0]
+			s.priReqQueue = s.priReqQueue[1:]
+			ch = s.workerCh
+		}
+
+		if req == nil && len(s.reqQueue) > 0 {
 			req = s.reqQueue[0]
 			s.reqQueue = s.reqQueue[1:]
 			ch = s.workerCh
@@ -43,8 +54,14 @@ func (s *Schedule) Schedule() {
 
 		select {
 		case r := <-s.requestCh:
-			s.reqQueue = append(s.reqQueue, r)
+			if r.Priority > 0 {
+				s.priReqQueue = append(s.priReqQueue, r)
+			} else {
+				s.reqQueue = append(s.reqQueue, r)
+			}
 		case ch <- req:
+			req = nil
+			ch = nil
 		}
 	}
 }
