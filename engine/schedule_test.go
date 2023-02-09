@@ -36,11 +36,11 @@ func TestScheduleEngine_Run(t *testing.T) {
 		Timeout:   3 * time.Second,
 	}
 
-	e := ScheduleEngine{
-		WorkCount: 5,
-		Logger:    l,
-		Fetcher:   f,
-		Seeds:     seeds,
-	}
+	e := NewScheduler(
+		WithWorkCount(5),
+		WithFetcher(f),
+		WithLogger(l),
+		WithSeeds(seeds),
+	)
 	e.Run()
 }
