@@ -22,8 +22,11 @@ func ParseCityList(contents []byte, req *fetcher.Request) fetcher.ParseResult {
 	for _, m := range matches {
 		url := string(m[1])
 		result.Requests = append(result.Requests, &fetcher.Request{
-			Url:    url,
-			Cookie: req.Cookie,
+			Url:      url,
+			Timeout:  req.Timeout,
+			Cookie:   req.Cookie,
+			Depth:    req.Depth + 1,
+			MaxDepth: req.MaxDepth,
 			ParseFunc: func(c []byte, r *fetcher.Request) fetcher.ParseResult {
 				return getContent(c, url)
 			},
