@@ -38,8 +38,8 @@ func (b BrowserFetcher) Get(r *Request) ([]byte, error) {
 	// Set the header of User-Agent to simulate browser
 	req.Header.Set("User-Agent", b.UserAgent)
 	// Set cookie to simulate login status
-	if len(r.Cookie) > 0 {
-		req.Header.Set("Cookie", r.Cookie)
+	if len(r.Task.Cookie) > 0 {
+		req.Header.Set("Cookie", r.Task.Cookie)
 	}
 
 	resp, err := client.Do(req)

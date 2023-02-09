@@ -37,20 +37,29 @@ func (s *Scheduler) Run() {
 }
 
 func (s *Scheduler) Schedule() {
-	for {
-		var req *fetcher.Request
-		var ch chan *fetcher.Request
-		if len(s.Seeds) > 0 {
-			req = s.Seeds[0]
-			s.Seeds = s.Seeds[1:]
-			ch = s.workerCh
-		}
-		select {
-		case r := <-s.requestCh:
-			s.Seeds = append(s.Seeds, r)
-		case ch <- req:
-		}
+	var reqQueue []*fetcher.Request
+	for _, seed := range s.Seeds {
+		seed.RootReq.Task = seed
+		seed.RootReq.Url = seed.Url
+		reqQueue = append(reqQueue, seed.RootReq)
 	}
+
+	go func() {
+		for {
+			var req *fetcher.Request
+			var ch chan *fetcher.Request
+			if len(reqQueue) > 0 {
+				req = reqQueue[0]
+				reqQueue = reqQueue[1:]
+				ch = s.workerCh
+			}
+			select {
+			case r := <-s.requestCh:
+				reqQueue = append(reqQueue, r)
+			case ch <- req:
+			}
+		}
+	}()
 }
 
 func (s *Scheduler) CreateWork() {

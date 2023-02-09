@@ -20,8 +20,6 @@ func TestParseCityList(t *testing.T) {
 		str := fmt.Sprintf(originUrl, i)
 		workList = append(workList, &fetcher.Request{
 			Url:       str,
-			Cookie:    "xxx",
-			Timeout:   3 * time.Second,
 			ParseFunc: ParseCityList,
 		})
 	}

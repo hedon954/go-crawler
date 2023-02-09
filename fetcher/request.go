@@ -2,18 +2,13 @@ package fetcher
 
 import (
 	"errors"
-	"time"
 )
 
-// Request defines a crawler request
+// Request represents a single crawler request
 type Request struct {
-	Url     string
-	Cookie  string
-	Timeout time.Duration
-	// Current crawling depth
-	Depth int
-	// The max crawling depth
-	MaxDepth  int
+	Task      *Task
+	Url       string
+	Depth     int
 	ParseFunc func([]byte, *Request) ParseResult
 }
 
@@ -33,7 +28,7 @@ func (r Request) Check() error {
 
 // checkDepth 检查深度的合法性
 func (r Request) checkDepth() error {
-	if r.Depth > r.MaxDepth {
+	if r.Depth > r.Task.MaxDepth {
 		return errors.New("Max depth limit reached")
 	}
 	return nil
