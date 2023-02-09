@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/hedon954/go-crawler/extensions"
 	"github.com/hedon954/go-crawler/proxy"
 	"go.uber.org/zap"
 	"golang.org/x/text/transform"
@@ -14,10 +15,9 @@ import (
 
 // BrowserFetcher is a fetcher which simulates browser
 type BrowserFetcher struct {
-	UserAgent string
-	Timeout   time.Duration
-	Proxy     proxy.Func
-	Logger    *zap.Logger
+	Timeout time.Duration
+	Proxy   proxy.Func
+	Logger  *zap.Logger
 }
 
 func (b BrowserFetcher) Get(r *Request) ([]byte, error) {
@@ -38,7 +38,7 @@ func (b BrowserFetcher) Get(r *Request) ([]byte, error) {
 	}
 
 	// Set the header of User-Agent to simulate browser
-	req.Header.Set("User-Agent", b.UserAgent)
+	req.Header.Set("User-Agent", extensions.GenerateRandomUA())
 	// Set cookie to simulate login status
 	if len(r.Task.Cookie) > 0 {
 		req.Header.Set("Cookie", r.Task.Cookie)
