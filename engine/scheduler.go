@@ -7,7 +7,7 @@ import (
 // Scheduler defines the behavior of scheduing crawl request
 type Scheduler interface {
 
-	// Start the scheduler
+	// Schedule starts the scheduler
 	Schedule()
 
 	// Push the request into scheduler

@@ -1,6 +1,7 @@
 package fetcher
 
 import (
+	"sync"
 	"time"
 )
 
@@ -10,6 +11,13 @@ type Task struct {
 	Cookie   string
 	WaitTime time.Duration
 	MaxDepth int
-	RootReq  *Request
-	Fetcher  Fetcher
+
+	// Mark whether the site can be crawled repeated
+	Reload bool
+
+	Visited     map[string]bool
+	VisitedLock sync.Mutex
+
+	RootReq *Request
+	Fetcher Fetcher
 }

@@ -15,6 +15,10 @@ type Crawler struct {
 	Visited     map[string]bool
 	VisitedLock sync.Mutex
 
+	// try again when crawled failed
+	failures    map[string]*fetcher.Request
+	failureLock sync.Mutex
+
 	options
 }
 
@@ -73,7 +77,7 @@ func (c *Crawler) CreateWork() {
 		}
 
 		// Remove duplicate request
-		if c.HasVisited(r) {
+		if !r.Task.Reload && c.HasVisited(r) {
 			continue
 		}
 		c.StoreVisited(r)
@@ -84,6 +88,7 @@ func (c *Crawler) CreateWork() {
 				zap.Error(err),
 				zap.String("url", r.Url),
 			)
+			c.SetFailure(r)
 			continue
 		}
 		if len(body) < 6000 {
@@ -91,6 +96,7 @@ func (c *Crawler) CreateWork() {
 				zap.Int("length", len(body)),
 				zap.String("url", r.Url),
 			)
+			c.SetFailure(r)
 			continue
 		}
 
@@ -111,4 +117,20 @@ func (c *Crawler) HandleResult() {
 			}
 		}
 	}
+}
+
+func (c *Crawler) SetFailure(req *fetcher.Request) {
+	if !req.Task.Reload {
+		c.VisitedLock.Lock()
+		delete(c.Visited, req.UniqueSign())
+		c.VisitedLock.Unlock()
+	}
+	c.failureLock.Lock()
+	defer c.failureLock.Unlock()
+	// retry at first failure
+	if _, ok := c.failures[req.UniqueSign()]; !ok {
+		c.failures[req.UniqueSign()] = req
+		c.scheduler.Push(req)
+	}
+	// TODO: failed twice or more, adds req to failure queue
 }
