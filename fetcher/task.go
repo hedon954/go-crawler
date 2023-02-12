@@ -7,6 +7,9 @@ import (
 
 // Task represents a complete crawl task
 type Task struct {
+
+	// The unique signature of the Task
+	Name     string
 	Url      string
 	Cookie   string
 	WaitTime time.Duration
@@ -20,4 +23,5 @@ type Task struct {
 
 	RootReq *Request
 	Fetcher Fetcher
+	Rule    RuleTree
 }

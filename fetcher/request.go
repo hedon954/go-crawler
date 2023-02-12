@@ -8,12 +8,13 @@ import (
 
 // Request represents a single crawler request
 type Request struct {
-	Task      *Task
-	Url       string
-	Method    string
-	Depth     int
-	Priority  int
-	ParseFunc func([]byte, *Request) ParseResult
+	unique   string
+	Task     *Task
+	Url      string
+	Method   string
+	Depth    int
+	Priority int
+	RuleName string
 }
 
 // ParseResult defines the result after parsing crawled response

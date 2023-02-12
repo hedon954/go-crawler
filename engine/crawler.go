@@ -30,6 +30,7 @@ func NewCrawler(opts ...Option) *Crawler {
 	e := &Crawler{}
 	e.Visited = make(map[string]bool, 100)
 	e.out = make(chan fetcher.ParseResult)
+	e.failures = make(map[string]*fetcher.Request)
 	e.options = dopts
 	return e
 }
@@ -60,9 +61,13 @@ func (c *Crawler) Run() {
 func (c *Crawler) Schedule() {
 	var reqs []*fetcher.Request
 	for _, seed := range c.Seeds {
-		seed.RootReq.Task = seed
-		seed.RootReq.Url = seed.Url
-		reqs = append(reqs, seed.RootReq)
+		task := Store.hash[seed.Name]
+		task.Fetcher = seed.Fetcher
+		rootReqs := task.Rule.Root()
+		for _, req := range rootReqs {
+			req.Task = task
+		}
+		reqs = append(reqs, rootReqs...)
 	}
 	go c.scheduler.Schedule()
 	go c.scheduler.Push(reqs...)
@@ -100,7 +105,12 @@ func (c *Crawler) CreateWork() {
 			continue
 		}
 
-		result := r.ParseFunc(body, r)
+		// Get the rule corresponding to the request
+		rule := r.Task.Rule.Trunk[r.RuleName]
+		result := rule.ParseFunc(&fetcher.Context{
+			Body: body,
+			Req:  r,
+		})
 		if len(result.Requests) > 0 {
 			go c.scheduler.Push(result.Requests...)
 		}
