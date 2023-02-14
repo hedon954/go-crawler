@@ -63,7 +63,11 @@ func (c *Crawler) Schedule() {
 	for _, seed := range c.Seeds {
 		task := Store.hash[seed.Name]
 		task.Fetcher = seed.Fetcher
-		rootReqs := task.Rule.Root()
+		rootReqs, err := task.Rule.Root()
+		if err != nil {
+			c.Logger.Error("get root failed", zap.Error(err))
+			continue
+		}
 		for _, req := range rootReqs {
 			req.Task = task
 		}
@@ -107,10 +111,14 @@ func (c *Crawler) CreateWork() {
 
 		// Get the rule corresponding to the request
 		rule := r.Task.Rule.Trunk[r.RuleName]
-		result := rule.ParseFunc(&fetcher.Context{
+		result, err := rule.ParseFunc(&fetcher.Context{
 			Body: body,
 			Req:  r,
 		})
+		if err != nil {
+			c.Logger.Error("parse func failed", zap.Error(err), zap.String("url", r.Url))
+			continue
+		}
 		if len(result.Requests) > 0 {
 			go c.scheduler.Push(result.Requests...)
 		}

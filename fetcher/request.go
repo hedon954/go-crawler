@@ -12,8 +12,8 @@ type Request struct {
 	Task     *Task
 	Url      string
 	Method   string
-	Depth    int
-	Priority int
+	Depth    int64
+	Priority int64
 	RuleName string
 }
 

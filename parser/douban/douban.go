@@ -21,12 +21,14 @@ const (
 )
 
 var DoubanTask = &fetcher.Task{
-	Name:     TaskNameFindSunRoom,
-	WaitTime: 1 * time.Second,
-	MaxDepth: 5,
-	Cookie:   "xxx",
+	Property: fetcher.Property{
+		Name:     TaskNameFindSunRoom,
+		WaitTime: 1 * time.Second,
+		MaxDepth: 5,
+		Cookie:   "xxx",
+	},
 	Rule: fetcher.RuleTree{
-		Root: func() []*fetcher.Request {
+		Root: func() ([]*fetcher.Request, error) {
 			var roots []*fetcher.Request
 			for i := 0; i < 100; i += 25 {
 				url := fmt.Sprintf(originUrl, i)
@@ -37,7 +39,7 @@ var DoubanTask = &fetcher.Task{
 					RuleName: ruleNameParseUrl,
 				})
 			}
-			return roots
+			return roots, nil
 		},
 		Trunk: map[string]*fetcher.Rule{
 			ruleNameParseUrl:       {ParseURL},
@@ -47,7 +49,7 @@ var DoubanTask = &fetcher.Task{
 }
 
 // ParseURL parses the target url
-func ParseURL(ctx *fetcher.Context) fetcher.ParseResult {
+func ParseURL(ctx *fetcher.Context) (fetcher.ParseResult, error) {
 	re := regexp.MustCompile(cityListRe)
 	matches := re.FindAllSubmatch(ctx.Body, -1)
 
@@ -62,19 +64,19 @@ func ParseURL(ctx *fetcher.Context) fetcher.ParseResult {
 			RuleName: ruleNameResolveSunRoom,
 		})
 	}
-	return res
+	return res, nil
 }
 
 // GetSunRoom resolves the sun room infos in the crawled website
-func GetSunRoom(ctx *fetcher.Context) fetcher.ParseResult {
+func GetSunRoom(ctx *fetcher.Context) (fetcher.ParseResult, error) {
 	re := regexp.MustCompile(contentRe)
 	ok := re.Match(ctx.Body)
 	if !ok {
 		return fetcher.ParseResult{
 			Items: []interface{}{},
-		}
+		}, nil
 	}
 	return fetcher.ParseResult{
 		Items: []interface{}{ctx.Req.Url},
-	}
+	}, nil
 }
