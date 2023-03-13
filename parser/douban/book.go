@@ -1,10 +1,11 @@
 package douban
 
 import (
-	"github.com/hedon954/go-crawler/fetcher"
 	"regexp"
 	"strconv"
 	"time"
+
+	"github.com/hedon954/go-crawler/fetcher"
 )
 
 const (
@@ -23,13 +24,15 @@ const (
 )
 
 var DoubanBookTask = &fetcher.Task{
-	Name:     TaskNameDoubanBook,
-	WaitTime: 1 * time.Second,
-	MaxDepth: 5,
-	Cookie:   "Xxx",
+	Property: fetcher.Property{
+		Name:     TaskNameDoubanBook,
+		WaitTime: 1 * time.Second,
+		MaxDepth: 5,
+		Cookie:   "Xxx",
+	},
 
 	Rule: fetcher.RuleTree{
-		Root: func() []*fetcher.Request {
+		Root: func() ([]*fetcher.Request, error) {
 			roots := []*fetcher.Request{
 				&fetcher.Request{
 					Priority: 1,
@@ -38,7 +41,7 @@ var DoubanBookTask = &fetcher.Task{
 					RuleName: ruleNameBookTag,
 				},
 			}
-			return roots
+			return roots, nil
 		},
 		Trunk: map[string]*fetcher.Rule{
 			ruleNameBookTag:   &fetcher.Rule{ParseFunc: ParseTag},

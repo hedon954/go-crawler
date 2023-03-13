@@ -34,16 +34,11 @@ func TestCrawler_Run_WithStorage(t *testing.T) {
 		return
 	}
 
-	go func() {
-		for {
-			time.Sleep(5 * time.Second)
-			_ = storage.Flush()
-		}
-	}()
-
 	seeds := make([]*fetcher.Task, 0, 1000)
 	seeds = append(seeds, &fetcher.Task{
-		Name:    douban.TaskNameDoubanBook,
+		Property: fetcher.Property{
+			Name: douban.TaskNameDoubanBook,
+		},
 		Fetcher: f,
 		Storage: storage,
 	})

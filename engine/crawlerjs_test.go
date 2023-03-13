@@ -4,14 +4,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hedon954/go-crawler/parser/douban"
-
 	"github.com/hedon954/go-crawler/fetcher"
 	"github.com/hedon954/go-crawler/logger"
+	"github.com/hedon954/go-crawler/parser/douban"
 	"go.uber.org/zap/zapcore"
 )
 
-func TestCrawler_Run(t *testing.T) {
+func TestCrawler_JS_Run(t *testing.T) {
 	plugin := logger.NewStdoutPlugin(zapcore.InfoLevel)
 	l := logger.NewLogger(plugin)
 	l.Info("log init end")
@@ -24,7 +23,7 @@ func TestCrawler_Run(t *testing.T) {
 	var seeds = make([]*fetcher.Task, 0, 1000)
 	seeds = append(seeds, &fetcher.Task{
 		Property: fetcher.Property{
-			Name: douban.TaskNameFindSunRoom,
+			Name: douban.TaskNameFindSunRoomJs,
 		},
 		Fetcher: f,
 	})
@@ -38,5 +37,4 @@ func TestCrawler_Run(t *testing.T) {
 	)
 
 	s.Run()
-
 }

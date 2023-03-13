@@ -21,12 +21,14 @@ const (
 )
 
 var DoubanTask = &fetcher.Task{
-	Name:     TaskNameFindSunRoom,
-	WaitTime: 1 * time.Second,
-	MaxDepth: 5,
-	Cookie:   "xxx",
+	Property: fetcher.Property{
+		Name:     TaskNameFindSunRoom,
+		WaitTime: 1 * time.Second,
+		MaxDepth: 5,
+		Cookie:   "xxx",
+	},
 	Rule: fetcher.RuleTree{
-		Root: func() []*fetcher.Request {
+		Root: func() ([]*fetcher.Request, error) {
 			var roots []*fetcher.Request
 			for i := 0; i < 100; i += 25 {
 				url := fmt.Sprintf(originUrl, i)
@@ -37,7 +39,7 @@ var DoubanTask = &fetcher.Task{
 					RuleName: ruleNameParseUrl,
 				})
 			}
-			return roots
+			return roots, nil
 		},
 		Trunk: map[string]*fetcher.Rule{
 			ruleNameParseUrl:       {nil, ParseURL},
