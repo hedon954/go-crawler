@@ -1,6 +1,7 @@
 package fetcher
 
 import (
+	"github.com/hedon954/go-crawler/collector"
 	"sync"
 	"time"
 )
@@ -24,4 +25,6 @@ type Task struct {
 	RootReq *Request
 	Fetcher Fetcher
 	Rule    RuleTree
+
+	Storage collector.Store
 }

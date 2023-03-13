@@ -15,6 +15,7 @@ type Request struct {
 	Depth    int
 	Priority int
 	RuleName string
+	TempData *Temp
 }
 
 // ParseResult defines the result after parsing crawled response

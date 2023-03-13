@@ -1,6 +1,7 @@
 package engine
 
 import (
+	"github.com/hedon954/go-crawler/collector"
 	"sync"
 
 	"github.com/hedon954/go-crawler/fetcher"
@@ -61,7 +62,7 @@ func (c *Crawler) Run() {
 func (c *Crawler) Schedule() {
 	var reqs []*fetcher.Request
 	for _, seed := range c.Seeds {
-		task := Store.hash[seed.Name]
+		task := Store.Hash[seed.Name]
 		task.Fetcher = seed.Fetcher
 		rootReqs := task.Rule.Root()
 		for _, req := range rootReqs {
@@ -107,7 +108,7 @@ func (c *Crawler) CreateWork() {
 
 		// Get the rule corresponding to the request
 		rule := r.Task.Rule.Trunk[r.RuleName]
-		result := rule.ParseFunc(&fetcher.Context{
+		result, _ := rule.ParseFunc(&fetcher.Context{
 			Body: body,
 			Req:  r,
 		})
@@ -123,6 +124,12 @@ func (c *Crawler) HandleResult() {
 		select {
 		case result := <-c.out:
 			for _, item := range result.Items {
+				switch d := item.(type) {
+				case *collector.OutputData:
+					name := d.TaskName
+					task := Store.Hash[name]
+					_ = task.Storage.Save(*d)
+				}
 				c.Logger.Sugar().Info("get result:", item)
 			}
 		}

@@ -1,9 +1,10 @@
 package engine
 
 import (
-	"github.com/hedon954/go-crawler/parser/douban"
 	"testing"
 	"time"
+
+	"github.com/hedon954/go-crawler/parser/douban"
 
 	"github.com/hedon954/go-crawler/fetcher"
 	"github.com/hedon954/go-crawler/logger"

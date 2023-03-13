@@ -40,14 +40,14 @@ var DoubanTask = &fetcher.Task{
 			return roots
 		},
 		Trunk: map[string]*fetcher.Rule{
-			ruleNameParseUrl:       {ParseURL},
-			ruleNameResolveSunRoom: {GetSunRoom},
+			ruleNameParseUrl:       {nil, ParseURL},
+			ruleNameResolveSunRoom: {nil, GetSunRoom},
 		},
 	},
 }
 
 // ParseURL parses the target url
-func ParseURL(ctx *fetcher.Context) fetcher.ParseResult {
+func ParseURL(ctx *fetcher.Context) (fetcher.ParseResult, error) {
 	re := regexp.MustCompile(cityListRe)
 	matches := re.FindAllSubmatch(ctx.Body, -1)
 
@@ -62,19 +62,19 @@ func ParseURL(ctx *fetcher.Context) fetcher.ParseResult {
 			RuleName: ruleNameResolveSunRoom,
 		})
 	}
-	return res
+	return res, nil
 }
 
 // GetSunRoom resolves the sun room infos in the crawled website
-func GetSunRoom(ctx *fetcher.Context) fetcher.ParseResult {
+func GetSunRoom(ctx *fetcher.Context) (fetcher.ParseResult, error) {
 	re := regexp.MustCompile(contentRe)
 	ok := re.Match(ctx.Body)
 	if !ok {
 		return fetcher.ParseResult{
 			Items: []interface{}{},
-		}
+		}, nil
 	}
 	return fetcher.ParseResult{
 		Items: []interface{}{ctx.Req.Url},
-	}
+	}, nil
 }
