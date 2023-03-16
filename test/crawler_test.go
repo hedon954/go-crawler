@@ -54,7 +54,7 @@ func TestCrawler_Run_WithStorage(t *testing.T) {
 	s := engine.NewCrawler(
 		engine.WithFetcher(f),
 		engine.WithLogger(l),
-		engine.WithWorkCount(5),
+		engine.WithWorkCount(10),
 		engine.WithSeeds(seeds),
 		engine.WithScheduler(engine.NewSchedule()),
 	)

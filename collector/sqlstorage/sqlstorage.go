@@ -114,11 +114,14 @@ func (s *SqlStore) Flush() error {
 			args = append(args, v)
 		}
 	}
-
-	return s.db.Insert(sqldb.TableData{
+	if err := s.db.Insert(sqldb.TableData{
 		TableName:   s.dataDocker[0].TaskName,
 		ColumnNames: getFields(s.dataDocker[0]),
 		Args:        args,
 		DataCount:   len(s.dataDocker),
-	})
+	}); err != nil {
+		return err
+	}
+	s.dataDocker = nil
+	return nil
 }
