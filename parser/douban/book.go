@@ -135,7 +135,7 @@ func ParseBookDetail(ctx *fetcher.Context) (fetcher.ParseResult, error) {
 
 func ExtraString(contents []byte, re *regexp.Regexp) string {
 	match := re.FindSubmatch(contents)
-	if len(match) > 2 {
+	if len(match) >= 2 {
 		return string(match[1])
 	}
 	return ""
