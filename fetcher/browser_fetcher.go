@@ -45,6 +45,7 @@ func (b BrowserFetcher) Get(r *Request) ([]byte, error) {
 	}
 
 	resp, err := client.Do(req)
+	b.Logger.Info("start to fetch: " + r.Url)
 	if err != nil {
 		return nil, err
 	}

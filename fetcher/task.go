@@ -1,9 +1,12 @@
 package fetcher
 
 import (
-	"github.com/hedon954/go-crawler/collector"
+	"log"
 	"sync"
 	"time"
+
+	"github.com/hedon954/go-crawler/collector"
+	"github.com/hedon954/go-crawler/limiter"
 )
 
 // Task represents a complete crawl task
@@ -17,7 +20,9 @@ type Task struct {
 	Fetcher Fetcher
 	Rule    RuleTree
 
+	Logger  *log.Logger
 	Storage collector.Store
+	Limiter limiter.MultiLimiter
 }
 
 type Property struct {

@@ -1,7 +1,11 @@
 package engine
 
 import (
+	"context"
+	"fmt"
+	"math/rand"
 	"sync"
+	"time"
 
 	"github.com/hedon954/go-crawler/collector"
 	"github.com/hedon954/go-crawler/fetcher"
@@ -54,6 +58,7 @@ func (c *Crawler) StoreVisited(reqs ...*fetcher.Request) {
 func (c *Crawler) Run() {
 	go c.Schedule()
 	for i := 0; i < c.WorkCount; i++ {
+		c.Logger.Info(fmt.Sprintf("start the %d work", i+1))
 		go c.CreateWork()
 	}
 	c.HandleResult()
@@ -64,6 +69,9 @@ func (c *Crawler) Schedule() {
 	for _, seed := range c.Seeds {
 		task := Store.Hash[seed.Name]
 		task.Fetcher = seed.Fetcher
+		task.Storage = seed.Storage
+		task.Limiter = seed.Limiter
+		task.Logger = seed.Logger
 		rootReqs, err := task.Rule.Root()
 		if err != nil {
 			c.Logger.Error("get root failed", zap.Error(err))
@@ -91,6 +99,13 @@ func (c *Crawler) CreateWork() {
 			continue
 		}
 		c.StoreVisited(r)
+
+		if err := r.Task.Limiter.Wait(context.Background()); err != nil {
+			c.Logger.Error("limiter error", zap.Error(err))
+			continue
+		}
+		sleepTime := rand.Intn(5000)
+		time.Sleep(time.Duration(sleepTime) * time.Millisecond)
 
 		body, err := r.Task.Fetcher.Get(r)
 		if err != nil {

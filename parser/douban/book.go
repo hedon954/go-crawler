@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/hedon954/go-crawler/fetcher"
+	"go.uber.org/zap"
 )
 
 const (
@@ -81,9 +82,11 @@ func ParseTag(ctx *fetcher.Context) (fetcher.ParseResult, error) {
 			Task:     ctx.Req.Task,
 			Url:      bookUrl + string(m[1]),
 			Depth:    ctx.Req.Depth + 1,
-			RuleName: ruleNameBookTag,
+			RuleName: ruleNameBookIntro,
 		})
 	}
+
+	zap.S().Debugln("parse book tag, count:", len(result.Requests))
 	return result, nil
 }
 
@@ -99,13 +102,14 @@ func ParseBookList(ctx *fetcher.Context) (fetcher.ParseResult, error) {
 			Task:     ctx.Req.Task,
 			Url:      string(m[1]),
 			Depth:    ctx.Req.Depth + 1,
-			RuleName: ruleNameBookIntro,
+			RuleName: ruleNameBookDetail,
 		}
 		req.TempData = &fetcher.Temp{}
 		_ = req.TempData.Set(fieldBookName, string(m[2]))
 		result.Requests = append(result.Requests, req)
 	}
 
+	zap.S().Debugln("parse book list, count:", len(result.Requests))
 	return result, nil
 }
 
@@ -114,13 +118,13 @@ func ParseBookDetail(ctx *fetcher.Context) (fetcher.ParseResult, error) {
 	bookName := ctx.Req.TempData.Get(fieldBookName)
 	page, _ := strconv.Atoi(ExtraString(ctx.Body, pageRe))
 	book := map[string]interface{}{
-		"书名":  bookName,
-		"作者":  ExtraString(ctx.Body, autoRe),
-		"页数":  page,
+		"书名":   bookName,
+		"作者":   ExtraString(ctx.Body, autoRe),
+		"页数":   page,
 		"出版社": ExtraString(ctx.Body, public),
-		"得分":  ExtraString(ctx.Body, scoreRe),
-		"价格":  ExtraString(ctx.Body, priceRe),
-		"简介":  ExtraString(ctx.Body, intoRe),
+		"得分":   ExtraString(ctx.Body, scoreRe),
+		"价格":   ExtraString(ctx.Body, priceRe),
+		"简介":   ExtraString(ctx.Body, intoRe),
 	}
 	data := ctx.Output(book)
 	result := fetcher.ParseResult{
