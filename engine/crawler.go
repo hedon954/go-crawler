@@ -51,7 +51,8 @@ func (c *Crawler) StoreVisited(reqs ...*fetcher.Request) {
 	defer c.VisitedLock.Unlock()
 
 	for _, r := range reqs {
-		c.Visited[r.UniqueSign()] = true
+		unique := r.UniqueSign()
+		c.Visited[unique] = true
 	}
 }
 
