@@ -16,30 +16,36 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-func TestCrawler_Run_WithStorage(t *testing.T) {
-	plugin := logger.NewStdoutPlugin(zapcore.DebugLevel)
-	l := logger.NewLogger(plugin)
-	l.Info("log init end")
+var (
+	// logger
+	plugin = logger.NewStdoutPlugin(zapcore.DebugLevel)
+	l      = logger.NewLogger(plugin)
 
-	var f fetcher.Fetcher = &fetcher.BrowserFetcher{
+	// fetcher
+	f = &fetcher.BrowserFetcher{
 		Timeout: 3000 * time.Millisecond,
 		Logger:  l,
 	}
 
-	storage, err := sqlstorage.New(
+	// storage
+	storage, err = sqlstorage.New(
 		sqlstorage.WithSqlUrl("root:root@tcp(127.0.0.1:3306)/crawler?charset=utf8"),
 		sqlstorage.WithLogger(l.Named("sqlDB")),
 		sqlstorage.WithBatchCount(2),
 	)
+
+	// limiter
+	secondLimit  = rate.NewLimiter(limiter.Per(1, 2*time.Second), 1)
+	minuteLimit  = rate.NewLimiter(limiter.Per(20, 1*time.Minute), 20)
+	multiLimiter = limiter.NewMultiLimiter(secondLimit, minuteLimit)
+)
+
+func TestCrawler_Run_WithStorage(t *testing.T) {
+	l.Info("log init end")
 	if err != nil {
 		l.Error(fmt.Sprintf("create sqlstorage failed: %v", err))
 		return
 	}
-
-	secondLimit := rate.NewLimiter(limiter.Per(1, 2*time.Second), 1)
-	minuteLimit := rate.NewLimiter(limiter.Per(20, 1*time.Minute), 20)
-	multiLimiter := limiter.NewMultiLimiter(secondLimit, minuteLimit)
-
 	seeds := make([]*fetcher.Task, 0, 1000)
 	seeds = append(seeds, &fetcher.Task{
 		Property: fetcher.Property{
