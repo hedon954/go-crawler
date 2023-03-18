@@ -152,7 +152,9 @@ func (c *Crawler) HandleResult() {
 				case *collector.OutputData:
 					name := d.TaskName
 					task := Store.Hash[name]
-					_ = task.Storage.Save(*d)
+					if err := task.Storage.Save(*d); err != nil {
+						c.Logger.Error("save data failed", zap.Error(err))
+					}
 				}
 				c.Logger.Sugar().Info("get result:", item)
 			}

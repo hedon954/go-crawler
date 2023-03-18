@@ -118,13 +118,13 @@ func ParseBookDetail(ctx *fetcher.Context) (fetcher.ParseResult, error) {
 	bookName := ctx.Req.TempData.Get(fieldBookName)
 	page, _ := strconv.Atoi(ExtraString(ctx.Body, pageRe))
 	book := map[string]interface{}{
-		"书名":   bookName,
-		"作者":   ExtraString(ctx.Body, autoRe),
-		"页数":   page,
+		"书名":  bookName,
+		"作者":  ExtraString(ctx.Body, autoRe),
+		"页数":  page,
 		"出版社": ExtraString(ctx.Body, public),
-		"得分":   ExtraString(ctx.Body, scoreRe),
-		"价格":   ExtraString(ctx.Body, priceRe),
-		"简介":   ExtraString(ctx.Body, intoRe),
+		"得分":  ExtraString(ctx.Body, scoreRe),
+		"价格":  ExtraString(ctx.Body, priceRe),
+		"简介":  ExtraString(ctx.Body, intoRe),
 	}
 	data := ctx.Output(book)
 	result := fetcher.ParseResult{

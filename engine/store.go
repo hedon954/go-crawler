@@ -3,11 +3,13 @@ package engine
 import (
 	"github.com/hedon954/go-crawler/fetcher"
 	"github.com/hedon954/go-crawler/parser/douban"
+	"github.com/hedon954/go-crawler/parser/tianyancha"
 )
 
 func init() {
 	Store.Add(douban.DoubanTask)
 	Store.Add(douban.DoubanBookTask)
+	Store.Add(tianyancha.TianYanChaTask)
 }
 
 // Store is the global CrawlerStore instance

@@ -41,6 +41,17 @@ func (c *Context) Output(data interface{}) *collector.OutputData {
 	return res
 }
 
+func (c *Context) OutputStruct(dataStruct collector.DataStruct) *collector.OutputData {
+	res := &collector.OutputData{}
+	res.Data = make(map[string]interface{})
+	res.TaskName = c.Req.Task.Name
+	res.RuleName = c.Req.RuleName
+	res.Url = c.Req.Url
+	res.Time = time.Now().Format("2006-01-02 15:04:05")
+	res.Struct = dataStruct
+	return res
+}
+
 // ParseJSReg 用于 JS 代码中解析正则表达式，获取请求任务列表
 func (c *Context) ParseJSReg(ruleName string, reg string) ParseResult {
 	re := regexp.MustCompile(reg)
