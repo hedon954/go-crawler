@@ -43,6 +43,10 @@ func (b BrowserFetcher) Get(r *Request) ([]byte, error) {
 	if len(r.Task.Cookie) > 0 {
 		req.Header.Set("Cookie", r.Task.Cookie)
 	}
+	// Add specify headers
+	for k, v := range r.Task.Headers {
+		req.Header.Set(k, v)
+	}
 
 	resp, err := client.Do(req)
 	b.Logger.Info("start to fetch: " + r.Url)

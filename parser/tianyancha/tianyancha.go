@@ -50,7 +50,11 @@ var TianYanChaTask = &fetcher.Task{
 		Name:     TaskNameTianYanCha,
 		WaitTime: 1 * time.Second,
 		MaxDepth: 5,
-		Cookie:   `HWWAFSESID=9edbfc72abc96c645b; HWWAFSESTIME=1679110175285; csrfToken=wDGWVZ58dxKLHKD0RJplBPEV; jsid=SEO-BAIDU-ALL-SY-000001; TYCID=1af08280c53d11ed81b4bdbf95e432f8; sajssdk_2015_cross_new_user=1; Hm_lvt_e92c8d65d92d534b0fc290df538b4758=1679110176; bdHomeCount=0; bannerFlag=true; ssuid=8176940507; _ga=GA1.2.292669649.1679110386; _gid=GA1.2.1479135818.1679110386; sensorsdata2015jssdkcross=%7B%22distinct_id%22%3A%22297428115%22%2C%22first_id%22%3A%22186f2c3fbd1926-076f09e7232fd44-1f525634-1296000-186f2c3fbd2b8e%22%2C%22props%22%3A%7B%22%24latest_traffic_source_type%22%3A%22%E7%9B%B4%E6%8E%A5%E6%B5%81%E9%87%8F%22%2C%22%24latest_search_keyword%22%3A%22%E6%9C%AA%E5%8F%96%E5%88%B0%E5%80%BC_%E7%9B%B4%E6%8E%A5%E6%89%93%E5%BC%80%22%2C%22%24latest_referrer%22%3A%22%22%7D%2C%22identities%22%3A%22eyIkaWRlbnRpdHlfY29va2llX2lkIjoiMTg2ZjJjM2ZiZDE5MjYtMDc2ZjA5ZTcyMzJmZDQ0LTFmNTI1NjM0LTEyOTYwMDAtMTg2ZjJjM2ZiZDJiOGUiLCIkaWRlbnRpdHlfbG9naW5faWQiOiIyOTc0MjgxMTUifQ%3D%3D%22%2C%22history_login_id%22%3A%7B%22name%22%3A%22%24identity_login_id%22%2C%22value%22%3A%22297428115%22%7D%2C%22%24device_id%22%3A%22186f2c3fbd1926-076f09e7232fd44-1f525634-1296000-186f2c3fbd2b8e%22%7D; tyc-user-info={%22state%22:%220%22%2C%22vipManager%22:%220%22%2C%22mobile%22:%2215623205156%22}; tyc-user-info-save-time=1679110440917; auth_token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNTYyMzIwNTE1NiIsImlhdCI6MTY3OTExMDQ0MCwiZXhwIjoxNjgxNzAyNDQwfQ.mNlC3Kj2Y5OKRozqh59wOjpE1jLuCKtRVtqcXdKeh_IdB7Ym9tfTjey-2x7gjxfZRwcZ2U76B74mp_ox2hT9hQ; tyc-user-phone=%255B%252215623205156%2522%255D; searchSessionId=1679116419.23758314; Hm_lpvt_e92c8d65d92d534b0fc290df538b4758=1679116424; cloud_token=535afaea9df647bd8f27a3356324317b; cloud_utm=4cc2926538634b1a896db92fa9034cda`,
+		Cookie:   "jsid=SEO-BAIDU-ALL-SY-000001; TYCID=1af08280c53d11ed81b4bdbf95e432f8; sajssdk_2015_cross_new_user=1; bdHomeCount=0; ssuid=8176940507; _ga=GA1.2.292669649.1679110386; _gid=GA1.2.1479135818.1679110386; tyc-user-phone=%255B%252215623205156%2522%255D; HWWAFSESID=02de844846daa72c731; HWWAFSESTIME=1679132592651; csrfToken=P-FhjaXkfYIjQlA6oJnIcNbf; Hm_lvt_e92c8d65d92d534b0fc290df538b4758=1679110176,1679132595; bannerFlag=true; sensorsdata2015jssdkcross=%7B%22distinct_id%22%3A%22284632286%22%2C%22first_id%22%3A%22186f2c3fbd1926-076f09e7232fd44-1f525634-1296000-186f2c3fbd2b8e%22%2C%22props%22%3A%7B%22%24latest_traffic_source_type%22%3A%22%E7%9B%B4%E6%8E%A5%E6%B5%81%E9%87%8F%22%2C%22%24latest_search_keyword%22%3A%22%E6%9C%AA%E5%8F%96%E5%88%B0%E5%80%BC_%E7%9B%B4%E6%8E%A5%E6%89%93%E5%BC%80%22%2C%22%24latest_referrer%22%3A%22%22%7D%2C%22identities%22%3A%22eyIkaWRlbnRpdHlfY29va2llX2lkIjoiMTg2ZjJjM2ZiZDE5MjYtMDc2ZjA5ZTcyMzJmZDQ0LTFmNTI1NjM0LTEyOTYwMDAtMTg2ZjJjM2ZiZDJiOGUiLCIkaWRlbnRpdHlfbG9naW5faWQiOiIyODQ2MzIyODYifQ%3D%3D%22%2C%22history_login_id%22%3A%7B%22name%22%3A%22%24identity_login_id%22%2C%22value%22%3A%22284632286%22%7D%2C%22%24device_id%22%3A%22186f2c3fbd1926-076f09e7232fd44-1f525634-1296000-186f2c3fbd2b8e%22%7D; tyc-user-info=%7B%22state%22%3A%225%22%2C%22vipManager%22%3A%220%22%2C%22mobile%22%3A%2217144837089%22%2C%22isExpired%22%3A%220%22%7D; tyc-user-info-save-time=1679134108956; auth_token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNzE0NDgzNzA4OSIsImlhdCI6MTY3OTEzNDEwOCwiZXhwIjoxNjgxNzI2MTA4fQ.hXpPs0kS8lC61T3pJy7yTIM58OhybYI5kz0KuNcxL7Srk-9aMHLzj4cqxjwUEU0FlhCFfu-y56XczwDhT1RNCg; searchSessionId=1679134583.08176987; Hm_lpvt_e92c8d65d92d534b0fc290df538b4758=1679134791",
+		Headers: map[string]string{
+			"X-AUTH-TOKEN": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNzE0NDgzNzA4OSIsImlhdCI6MTY3OTEzNDEwOCwiZXhwIjoxNjgxNzI2MTA4fQ.hXpPs0kS8lC61T3pJy7yTIM58OhybYI5kz0KuNcxL7Srk-9aMHLzj4cqxjwUEU0FlhCFfu-y56XczwDhT1RNCg",
+			"X-TYCID":      "1af08280c53d11ed81b4bdbf95e432f8",
+		},
 	},
 
 	Rule: fetcher.RuleTree{
@@ -83,7 +87,7 @@ func ParseHomeURL(ctx *fetcher.Context) (fetcher.ParseResult, error) {
 	result := fetcher.ParseResult{}
 	for _, m := range matches {
 		// no vip can just get the first 5 pages
-		for i := 1; i <= 5; i++ {
+		for i := 1; i <= 250; i++ {
 			req := &fetcher.Request{
 				Method:   "GET",
 				Task:     ctx.Req.Task,

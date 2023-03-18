@@ -34,4 +34,6 @@ type Property struct {
 	// Mark whether the site can be crawled repeated
 	Reload   bool  `json:"reload"`
 	MaxDepth int64 `json:"max_depth"`
+	// Headers needs to be added to http headers
+	Headers map[string]string `json:"headers"`
 }

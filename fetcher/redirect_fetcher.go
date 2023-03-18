@@ -58,6 +58,10 @@ func (b RedirectFetcher) Get(r *Request) ([]byte, error) {
 	if len(r.Task.Cookie) > 0 {
 		req.Header.Set("Cookie", r.Task.Cookie)
 	}
+	// Add specify headers
+	for k, v := range r.Task.Headers {
+		req.Header.Set(k, v)
+	}
 
 	resp, err := client.Do(req)
 	b.Logger.Info("start to fetch: " + r.Url)
@@ -73,7 +77,7 @@ func (b RedirectFetcher) Get(r *Request) ([]byte, error) {
 			urlInfo, _ := url.Parse(r.Url)
 			host := urlInfo.Host
 			newUrl := "https://" + host + realPath
-			return b.handleRedirectUrl(newUrl, r.Task.Cookie)
+			return b.handleRedirectUrl(r, newUrl, r.Task.Cookie)
 		}
 	}
 	if resp.StatusCode != http.StatusOK {
@@ -86,7 +90,7 @@ func (b RedirectFetcher) Get(r *Request) ([]byte, error) {
 }
 
 // handleRedirectUrl sends http request get the redirect url body
-func (b RedirectFetcher) handleRedirectUrl(newUrl, cookie string) ([]byte, error) {
+func (b RedirectFetcher) handleRedirectUrl(r *Request, newUrl, cookie string) ([]byte, error) {
 	client := &http.Client{
 		Timeout: b.Timeout,
 	}
@@ -108,6 +112,10 @@ func (b RedirectFetcher) handleRedirectUrl(newUrl, cookie string) ([]byte, error
 	// Set cookie to simulate login status
 	if len(cookie) > 0 {
 		req.Header.Set("Cookie", cookie)
+	}
+	// Add specify headers
+	for k, v := range r.Task.Headers {
+		req.Header.Set(k, v)
 	}
 
 	resp, err := client.Do(req)
