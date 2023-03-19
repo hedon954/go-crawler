@@ -3,6 +3,7 @@ package fetcher
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 
@@ -30,15 +31,15 @@ func (bf BaseFetcher) Get(r *Request) ([]byte, error) {
 
 	// In the Go language, strings are encoded in UTF-8 by default.
 	// So here we always convert html content to UTF-8 format
-	encodeMode := DeterminEncoding(bodyReader)
+	encodeMode := DetermineEncoding(bodyReader)
 	utf8Reader := transform.NewReader(bodyReader, encodeMode.NewDecoder())
 	return ioutil.ReadAll(utf8Reader)
 }
 
-// DeterminEncoding returns the encoder of the html content
-func DeterminEncoding(r *bufio.Reader) encoding.Encoding {
+// DetermineEncoding returns the encoder of the html content
+func DetermineEncoding(r *bufio.Reader) encoding.Encoding {
 	bs, err := r.Peek(1024)
-	if err != nil {
+	if err != nil && err != io.EOF {
 		fmt.Printf("peek body error: %v\n", err)
 		return unicode.UTF8
 	}

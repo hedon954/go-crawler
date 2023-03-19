@@ -3,7 +3,9 @@ package engine
 import (
 	"context"
 	"fmt"
+	"math/rand"
 	"sync"
+	"time"
 
 	"github.com/hedon954/go-crawler/collector"
 	"github.com/hedon954/go-crawler/fetcher"
@@ -103,8 +105,8 @@ func (c *Crawler) CreateWork() {
 			c.Logger.Error("limiter error", zap.Error(err))
 			continue
 		}
-		//sleepTime := rand.Intn(500)
-		//time.Sleep(time.Duration(sleepTime) * time.Millisecond)
+		sleepTime := rand.Intn(500)
+		time.Sleep(time.Duration(sleepTime) * time.Millisecond)
 
 		body, err := r.Task.Fetcher.Get(r)
 		if err != nil {
@@ -115,12 +117,7 @@ func (c *Crawler) CreateWork() {
 			c.SetFailure(r)
 			continue
 		}
-		if len(body) < 6000 {
-			c.Logger.Error("can't fetch ",
-				zap.Int("length", len(body)),
-				zap.String("url", r.Url),
-			)
-			c.SetFailure(r)
+		if len(body) == 0 {
 			continue
 		}
 
@@ -142,7 +139,9 @@ func (c *Crawler) CreateWork() {
 }
 
 func (c *Crawler) HandleResult() {
+	i := 0
 	for {
+		i++
 		select {
 		case result := <-c.out:
 			for _, item := range result.Items {
@@ -154,7 +153,9 @@ func (c *Crawler) HandleResult() {
 						c.Logger.Error("save data failed", zap.Error(err))
 					}
 				}
-				c.Logger.Sugar().Info("get result:", item)
+				if i%100 == 0 {
+					c.Logger.Sugar().Info("get result:", item)
+				}
 			}
 		}
 	}

@@ -70,6 +70,11 @@ func (b RedirectFetcher) Get(r *Request) ([]byte, error) {
 	}
 	defer resp.Body.Close()
 
+	// Ignore 404
+	if resp.StatusCode == http.StatusNotFound {
+		return nil, nil
+	}
+
 	// redirect, get the real url
 	if resp.StatusCode == http.StatusTemporaryRedirect {
 		realPath := resp.Header.Get("Location")
@@ -84,7 +89,10 @@ func (b RedirectFetcher) Get(r *Request) ([]byte, error) {
 		return nil, fmt.Errorf("got error status code: %d, status: %s\n", resp.StatusCode, resp.Status)
 	}
 	bodyReader := bufio.NewReader(resp.Body)
-	encodeMode := DeterminEncoding(bodyReader)
+	if bodyReader.Size() == 0 {
+		return nil, nil
+	}
+	encodeMode := DetermineEncoding(bodyReader)
 	utf8Reader := transform.NewReader(bodyReader, encodeMode.NewDecoder())
 	return ioutil.ReadAll(utf8Reader)
 }
@@ -129,7 +137,7 @@ func (b RedirectFetcher) handleRedirectUrl(r *Request, newUrl, cookie string) ([
 		return nil, fmt.Errorf("got error status code: %d, status: %s\n", resp.StatusCode, resp.Status)
 	}
 	bodyReader := bufio.NewReader(resp.Body)
-	encodeMode := DeterminEncoding(bodyReader)
+	encodeMode := DetermineEncoding(bodyReader)
 	utf8Reader := transform.NewReader(bodyReader, encodeMode.NewDecoder())
 	return ioutil.ReadAll(utf8Reader)
 }

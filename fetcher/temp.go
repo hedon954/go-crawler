@@ -15,3 +15,12 @@ func (t *Temp) Set(key string, value interface{}) error {
 	t.data[key] = value
 	return nil
 }
+
+func (t *Temp) Copy() *Temp {
+	n := &Temp{}
+	n.data = make(map[string]interface{})
+	for k, v := range t.data {
+		n.data[k] = v
+	}
+	return n
+}

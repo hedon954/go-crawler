@@ -165,7 +165,9 @@ func ParseCompanyDetail(ctx *fetcher.Context) (fetcher.ParseResult, error) {
 }
 
 var (
-	regexCode = regexp.MustCompile(`"creditCode":"([^"]+)"`)
+	regexCode        = regexp.MustCompile(`"creditCode":"([^"]+)"`)
+	regexTax         = regexp.MustCompile(`"taxNumber":"([^"]+)"`)
+	regexCompanyType = regexp.MustCompile(`"companyShowBizTypeName":"([^"]+)"`)
 )
 
 func parseSmallCompanyDetail(ctx *fetcher.Context, result *fetcher.ParseResult) {
@@ -219,6 +221,9 @@ func parseACompanyDetail(ctx *fetcher.Context, result *fetcher.ParseResult) {
 		KeyPeople:         "",
 		Shareholder:       getACompanyShareholder(ctx),
 		ForeignInvestment: getCompanyForeignInvestment(ctx),
+	}
+	if cData.CreditCode == "" {
+		cData.CreditCode = extraString(ctx.Body, regexTax)
 	}
 
 	wg := sync.WaitGroup{}

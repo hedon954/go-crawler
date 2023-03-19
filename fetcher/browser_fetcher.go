@@ -58,7 +58,7 @@ func (b BrowserFetcher) Get(r *Request) ([]byte, error) {
 		return nil, fmt.Errorf("got error status code: %d, status: %s\n", resp.StatusCode, resp.Status)
 	}
 	bodyReader := bufio.NewReader(resp.Body)
-	encodeMode := DeterminEncoding(bodyReader)
+	encodeMode := DetermineEncoding(bodyReader)
 	utf8Reader := transform.NewReader(bodyReader, encodeMode.NewDecoder())
 	return ioutil.ReadAll(utf8Reader)
 }

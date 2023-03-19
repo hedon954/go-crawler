@@ -10,6 +10,7 @@ func init() {
 	Store.Add(douban.DoubanTask)
 	Store.Add(douban.DoubanBookTask)
 	Store.Add(tianyancha.TianYanChaTask)
+	Store.Add(tianyancha.TianYanCha2Task)
 }
 
 // Store is the global CrawlerStore instance
