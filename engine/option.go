@@ -8,15 +8,17 @@ import (
 type Option func(opts *options)
 
 type options struct {
-	WorkCount int
-	Fetcher   fetcher.Fetcher
-	Logger    *zap.Logger
-	Seeds     []*fetcher.Task
-	scheduler Scheduler
+	WorkCount     int
+	ChannelBuffer int
+	Fetcher       fetcher.Fetcher
+	Logger        *zap.Logger
+	Seeds         []*fetcher.Task
+	scheduler     Scheduler
 }
 
 var defaultOptions = options{
-	Logger: zap.NewNop(),
+	Logger:        zap.NewNop(),
+	ChannelBuffer: 1024,
 }
 
 func WithLogger(logger *zap.Logger) Option {
@@ -46,5 +48,11 @@ func WithSeeds(seeds []*fetcher.Task) Option {
 func WithScheduler(scheduler Scheduler) Option {
 	return func(opts *options) {
 		opts.scheduler = scheduler
+	}
+}
+
+func WithChannelBuffer(bufferSize int) Option {
+	return func(opts *options) {
+		opts.ChannelBuffer = bufferSize
 	}
 }

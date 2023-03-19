@@ -3,9 +3,7 @@ package engine
 import (
 	"context"
 	"fmt"
-	"math/rand"
 	"sync"
-	"time"
 
 	"github.com/hedon954/go-crawler/collector"
 	"github.com/hedon954/go-crawler/fetcher"
@@ -33,10 +31,10 @@ func NewCrawler(opts ...Option) *Crawler {
 		opt(&dopts)
 	}
 	e := &Crawler{}
-	e.Visited = make(map[string]bool, 100)
-	e.out = make(chan fetcher.ParseResult)
-	e.failures = make(map[string]*fetcher.Request)
 	e.options = dopts
+	e.Visited = make(map[string]bool, 100)
+	e.out = make(chan fetcher.ParseResult, e.options.ChannelBuffer)
+	e.failures = make(map[string]*fetcher.Request)
 	return e
 }
 
@@ -105,8 +103,8 @@ func (c *Crawler) CreateWork() {
 			c.Logger.Error("limiter error", zap.Error(err))
 			continue
 		}
-		sleepTime := rand.Intn(5000)
-		time.Sleep(time.Duration(sleepTime) * time.Millisecond)
+		//sleepTime := rand.Intn(500)
+		//time.Sleep(time.Duration(sleepTime) * time.Millisecond)
 
 		body, err := r.Task.Fetcher.Get(r)
 		if err != nil {

@@ -2,6 +2,7 @@ package gorm
 
 import (
 	"encoding/json"
+	"sync"
 
 	"github.com/hedon954/go-crawler/collector"
 	"gorm.io/driver/mysql"
@@ -9,6 +10,7 @@ import (
 )
 
 type GormStore struct {
+	lock       sync.Mutex
 	dataDocker []collector.OutputData
 	db         *gorm.DB
 	options
@@ -33,24 +35,28 @@ func New(opts ...Option) (*GormStore, error) {
 
 // Save saves datas to GormStore
 func (s *GormStore) Save(datas ...collector.OutputData) error {
+	s.lock.Lock()
 	for _, data := range datas {
 		s.dataDocker = append(s.dataDocker, data)
-		if len(s.dataDocker) >= s.BatchCount {
-			if err := s.Flush(); err != nil {
-				return err
-			}
+	}
+	s.lock.Unlock()
+	if len(s.dataDocker) >= s.BatchCount {
+		if _, err := s.Flush(); err != nil {
+			return err
 		}
 	}
 	return nil
 }
 
 // Flush flushes datas to storage
-func (s *GormStore) Flush() error {
+func (s *GormStore) Flush() (int, error) {
+	s.lock.Lock()
+	defer s.lock.Unlock()
 	s.logger.Info("flush start")
 	defer s.logger.Info("flush end")
 
 	if len(s.dataDocker) == 0 {
-		return nil
+		return 0, nil
 	}
 
 	datas := make([]map[string]interface{}, 0)
@@ -64,5 +70,5 @@ func (s *GormStore) Flush() error {
 	_ = s.db.AutoMigrate(&s.dataDocker[0].Struct)
 	table := s.dataDocker[0].Struct.TableName()
 	s.dataDocker = nil
-	return s.db.Table(table).Create(&datas).Error
+	return len(datas), s.db.Table(table).Create(&datas).Error
 }

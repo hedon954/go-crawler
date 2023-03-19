@@ -7,6 +7,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/parnurzeal/gorequest"
@@ -50,10 +51,10 @@ var TianYanChaTask = &fetcher.Task{
 		Name:     TaskNameTianYanCha,
 		WaitTime: 1 * time.Second,
 		MaxDepth: 5,
-		Cookie:   "jsid=SEO-BAIDU-ALL-SY-000001; TYCID=1af08280c53d11ed81b4bdbf95e432f8; sajssdk_2015_cross_new_user=1; bdHomeCount=0; ssuid=8176940507; _ga=GA1.2.292669649.1679110386; _gid=GA1.2.1479135818.1679110386; tyc-user-phone=%255B%252215623205156%2522%255D; HWWAFSESID=02de844846daa72c731; HWWAFSESTIME=1679132592651; csrfToken=P-FhjaXkfYIjQlA6oJnIcNbf; Hm_lvt_e92c8d65d92d534b0fc290df538b4758=1679110176,1679132595; bannerFlag=true; sensorsdata2015jssdkcross=%7B%22distinct_id%22%3A%22284632286%22%2C%22first_id%22%3A%22186f2c3fbd1926-076f09e7232fd44-1f525634-1296000-186f2c3fbd2b8e%22%2C%22props%22%3A%7B%22%24latest_traffic_source_type%22%3A%22%E7%9B%B4%E6%8E%A5%E6%B5%81%E9%87%8F%22%2C%22%24latest_search_keyword%22%3A%22%E6%9C%AA%E5%8F%96%E5%88%B0%E5%80%BC_%E7%9B%B4%E6%8E%A5%E6%89%93%E5%BC%80%22%2C%22%24latest_referrer%22%3A%22%22%7D%2C%22identities%22%3A%22eyIkaWRlbnRpdHlfY29va2llX2lkIjoiMTg2ZjJjM2ZiZDE5MjYtMDc2ZjA5ZTcyMzJmZDQ0LTFmNTI1NjM0LTEyOTYwMDAtMTg2ZjJjM2ZiZDJiOGUiLCIkaWRlbnRpdHlfbG9naW5faWQiOiIyODQ2MzIyODYifQ%3D%3D%22%2C%22history_login_id%22%3A%7B%22name%22%3A%22%24identity_login_id%22%2C%22value%22%3A%22284632286%22%7D%2C%22%24device_id%22%3A%22186f2c3fbd1926-076f09e7232fd44-1f525634-1296000-186f2c3fbd2b8e%22%7D; tyc-user-info=%7B%22state%22%3A%225%22%2C%22vipManager%22%3A%220%22%2C%22mobile%22%3A%2217144837089%22%2C%22isExpired%22%3A%220%22%7D; tyc-user-info-save-time=1679134108956; auth_token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNzE0NDgzNzA4OSIsImlhdCI6MTY3OTEzNDEwOCwiZXhwIjoxNjgxNzI2MTA4fQ.hXpPs0kS8lC61T3pJy7yTIM58OhybYI5kz0KuNcxL7Srk-9aMHLzj4cqxjwUEU0FlhCFfu-y56XczwDhT1RNCg; searchSessionId=1679134583.08176987; Hm_lpvt_e92c8d65d92d534b0fc290df538b4758=1679134791",
+		Cookie:   "xxx",
 		Headers: map[string]string{
-			"X-AUTH-TOKEN": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNzE0NDgzNzA4OSIsImlhdCI6MTY3OTEzNDEwOCwiZXhwIjoxNjgxNzI2MTA4fQ.hXpPs0kS8lC61T3pJy7yTIM58OhybYI5kz0KuNcxL7Srk-9aMHLzj4cqxjwUEU0FlhCFfu-y56XczwDhT1RNCg",
-			"X-TYCID":      "1af08280c53d11ed81b4bdbf95e432f8",
+			"X-AUTH-TOKEN": "xxx",
+			"X-TYCID":      "xxx",
 		},
 	},
 
@@ -87,7 +88,7 @@ func ParseHomeURL(ctx *fetcher.Context) (fetcher.ParseResult, error) {
 	result := fetcher.ParseResult{}
 	for _, m := range matches {
 		// no vip can just get the first 5 pages
-		for i := 1; i <= 250; i++ {
+		for i := 1; i <= 5; i++ {
 			req := &fetcher.Request{
 				Method:   "GET",
 				Task:     ctx.Req.Task,
@@ -172,16 +173,34 @@ func parseSmallCompanyDetail(ctx *fetcher.Context, result *fetcher.ParseResult) 
 	companyName := ctx.Req.TempData.Get(fieldCompanyName)
 	companyId := ctx.Req.TempData.Get(fieldCompanyId)
 	cData := Data{
-		IndustryName:      industryName.(string),
-		CompanyName:       companyName.(string),
-		CompanyId:         companyId.(string),
-		CompanyType:       "小微企业",
-		CreditCode:        extraString(ctx.Body, regexCode),
-		Score:             getCompanyScore(ctx),
-		KeyPeople:         getCompanyKeyPerson(ctx),
-		Shareholder:       getSmallCompanyShareholder(ctx),
-		ForeignInvestment: getCompanyForeignInvestment(ctx),
+		IndustryName: industryName.(string),
+		CompanyName:  companyName.(string),
+		CompanyId:    companyId.(string),
+		CompanyType:  "小微企业",
+		CreditCode:   extraString(ctx.Body, regexCode),
 	}
+
+	wg := sync.WaitGroup{}
+	wg.Add(4)
+
+	go func() {
+		defer wg.Done()
+		cData.Score = getCompanyScore(ctx)
+	}()
+	go func() {
+		defer wg.Done()
+		cData.KeyPeople = getCompanyKeyPerson(ctx)
+	}()
+	go func() {
+		defer wg.Done()
+		cData.Shareholder = getSmallCompanyShareholder(ctx)
+	}()
+	go func() {
+		defer wg.Done()
+		cData.ForeignInvestment = getCompanyForeignInvestment(ctx)
+	}()
+
+	wg.Wait()
 	data := ctx.OutputStruct(cData)
 	result.Items = append(result.Items, data)
 }
@@ -201,6 +220,25 @@ func parseACompanyDetail(ctx *fetcher.Context, result *fetcher.ParseResult) {
 		Shareholder:       getACompanyShareholder(ctx),
 		ForeignInvestment: getCompanyForeignInvestment(ctx),
 	}
+
+	wg := sync.WaitGroup{}
+	wg.Add(3)
+
+	go func() {
+		defer wg.Done()
+		cData.Score = getCompanyScore(ctx)
+	}()
+	go func() {
+		defer wg.Done()
+		cData.Shareholder = getACompanyShareholder(ctx)
+	}()
+	go func() {
+		defer wg.Done()
+		cData.ForeignInvestment = getCompanyForeignInvestment(ctx)
+	}()
+
+	wg.Wait()
+
 	data := ctx.OutputStruct(cData)
 	result.Items = append(result.Items, data)
 }

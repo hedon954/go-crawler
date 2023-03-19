@@ -64,7 +64,7 @@ func (b RedirectFetcher) Get(r *Request) ([]byte, error) {
 	}
 
 	resp, err := client.Do(req)
-	b.Logger.Info("start to fetch: " + r.Url)
+	// b.Logger.Info("start to fetch: " + r.Url)
 	if err != nil {
 		return nil, err
 	}
@@ -119,7 +119,7 @@ func (b RedirectFetcher) handleRedirectUrl(r *Request, newUrl, cookie string) ([
 	}
 
 	resp, err := client.Do(req)
-	b.Logger.Info("start to fetch the redirect url: " + newUrl)
+	// b.Logger.Info("start to fetch the redirect url: " + newUrl)
 	if err != nil {
 		return nil, err
 	}
