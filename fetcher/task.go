@@ -1,9 +1,10 @@
 package fetcher
 
 import (
-	"log"
 	"sync"
 	"time"
+
+	"go.uber.org/zap"
 
 	"github.com/hedon954/go-crawler/collector"
 	"github.com/hedon954/go-crawler/limiter"
@@ -20,7 +21,7 @@ type Task struct {
 	Fetcher Fetcher
 	Rule    RuleTree
 
-	Logger  *log.Logger
+	Logger  *zap.Logger
 	Storage collector.Store
 	Limiter limiter.MultiLimiter
 }
